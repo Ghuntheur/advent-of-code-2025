@@ -21,7 +21,28 @@ function part1(input: string): number {
 }
 
 function part2(input: string): number {
-  return 0;
+  const lines = input.split('\n');
+  let total0 = 0;
+  let current = 50;
+
+  for (const line of lines) {
+    const direction = line[0];
+    const distance = +line.slice(1);
+
+    for (let i = 0; i < distance; i++) {
+      if (direction === 'R') {
+        current = (current + 1) % 100;
+      } else {
+        current = (current - 1 + 100) % 100;
+      }
+
+      if (current === 0) {
+        total0++;
+      }
+    }
+  }
+
+  return total0;
 }
 
 console.log('Part 1:', part1(input));
