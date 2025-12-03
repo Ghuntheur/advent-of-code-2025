@@ -26,9 +26,26 @@ const part1 = (input: string): number => {
   }, 0);
 };
 
-const part2 = (input: string): number => {
-  return 0;
-};
+const part2 = (input: string): number =>
+  input.split('\n').reduce((acc, line) => {
+    const digits = line.split('').map(Number);
+    const stack: number[] = [];
+
+    digits.forEach((digit, i) => {
+      while (
+        stack.length > 0 &&
+        (stack.at(-1) || 0) < digit &&
+        stack.length + digits.length - i > 12
+      ) {
+        stack.pop();
+      }
+      stack.push(digit);
+    });
+
+    const result = +stack.slice(0, 12).join('');
+
+    return acc + result;
+  }, 0);
 
 console.log('Part 1:', part1(input));
 console.log('Part 2:', part2(input));
