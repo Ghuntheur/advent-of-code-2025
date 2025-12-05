@@ -3,7 +3,7 @@ import { join } from 'path';
 
 const input = readFileSync(
   join(import.meta.dirname, 'input.txt'),
-  'utf-8'
+  'utf-8',
 ).trim();
 
 const calcResult = (input: string, regex: RegExp): number => {
