@@ -25,9 +25,6 @@ const part1 = (input: string): number => {
       .filter((_, index) => index % operations!.length === i)
       .map((item) => +item);
 
-    // const lineCalc = lineNumbers.join(operation);
-    // const result = eval(lineCalc);
-
     const result =
       operation === '+'
         ? lineNumbers.reduce((acc, item) => (acc += item))
@@ -38,7 +35,42 @@ const part1 = (input: string): number => {
 };
 
 const part2 = (input: string): number => {
-  return 0;
+  const isBreak = (digits: string[]) => digits.every((item) => item === '0');
+
+  const grid = input.replace(/ /g, '0');
+  const lines = grid.split('\n').map((line) => `0${line}`);
+
+  const numberLines = lines.slice(0, -1);
+  const signs = lines.at(-1)!;
+
+  const lineLength = numberLines[0].length;
+  const operations = signs.split('0').filter(Boolean);
+
+  let i = lineLength - 1;
+  let total = 0;
+
+  let currentStack = [];
+
+  while (i >= 0) {
+    const columnDigits = numberLines.map((item) => item[i]);
+
+    if (!isBreak(columnDigits)) {
+      currentStack.push(+columnDigits.filter((item) => item !== '0').join(''));
+    } else {
+      const currentOperation = operations.pop();
+      const result =
+        currentOperation === '+'
+          ? currentStack.reduce((acc, item) => (acc += item), 0)
+          : currentStack.reduce((acc, item) => (acc *= item), 1);
+
+      total += result;
+      currentStack = [];
+    }
+
+    i--;
+  }
+
+  return total;
 };
 
 console.log('Part 1:', part1(input));
