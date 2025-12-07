@@ -1,3 +1,4 @@
+import { count } from 'console';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -39,7 +40,59 @@ const part1 = (input: string): number => {
 };
 
 const part2 = (input: string): number => {
-  return 0;
+  type Block = { index: number; count: number };
+
+  const lines = input.split('\n');
+
+  let blocks: Block[] = [{ index: lines[0].indexOf('S'), count: 1 }];
+
+  const mergeBlocks = (): Block[] => {
+    const groupedBlocks = Object.groupBy(blocks, (block) => block.index);
+    const mergedBlocks: Block[] = [];
+
+    for (const [indexStr, items] of Object.entries(groupedBlocks)) {
+      if (!items) continue;
+
+      if (items.length > 1) {
+        mergedBlocks.push({
+          index: +indexStr,
+          count: items.reduce((acc, item) => acc + item.count, 0),
+        });
+      } else {
+        mergedBlocks.push(items[0]);
+      }
+    }
+
+    return mergedBlocks;
+  };
+
+  for (const line of lines.slice(1)) {
+    const splitIndexes = [...line.matchAll(/\^/g)].map((item) => item.index);
+    if (!splitIndexes.length) continue;
+
+    for (const index of splitIndexes) {
+      const blockToSplit = blocks.filter((block) => block.index === index);
+
+      blockToSplit.forEach((block) => {
+        const leftBlock: Block = { index: block.index - 1, count: block.count };
+        const rightBlock: Block = {
+          index: block.index + 1,
+          count: block.count,
+        };
+        blocks.push(leftBlock, rightBlock);
+        block.count = 0;
+      });
+    }
+
+    blocks = blocks.filter((block) => block.count !== 0);
+    blocks = mergeBlocks();
+
+    console.log(blocks);
+  }
+
+  const total = blocks.reduce((acc, item) => acc + item.count, 0);
+
+  return total;
 };
 
 console.log('Part 1:', part1(input));
