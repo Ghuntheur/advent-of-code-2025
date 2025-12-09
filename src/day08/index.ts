@@ -48,7 +48,7 @@ const part1 = (input: string): number => {
 
   const circuits: Circuit[] = [];
 
-  for (const edge of edges.slice(0, 1000)) {
+  for (const edge of edges.slice(0, 10)) {
     const edgePoints = edge.points;
 
     const sameCircuit = circuits.find((circuit) =>
@@ -114,6 +114,8 @@ const part1 = (input: string): number => {
   const filteredCircuits = circuits.map((circuit) =>
     unique(circuit.points, 'id'),
   );
+
+  console.log(filteredCircuits);
 
   return filteredCircuits
     .sort((a, b) => b.length - a.length)
